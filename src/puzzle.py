@@ -53,7 +53,7 @@ if __name__ == "__main__":
     displayPuzzle(shuffledPuzzle)
     print()
 
-    filePuzzle = readPuzzle(PATH + "1.txt")
+    filePuzzle = readPuzzle(PATH + "solvable1.txt")
     print("File puzzle:")
     displayPuzzle(filePuzzle)
 
