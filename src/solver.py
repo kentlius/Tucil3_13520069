@@ -1,5 +1,3 @@
-import os
-import time
 from puzzle import *
 
 # https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Branch-and-Bound-2021-Bagian1.pdf (page 18)
@@ -75,66 +73,83 @@ def down(puzzle):
     if row < DIM - 1:
         swap(puzzle, row, col, row + 1, col)
 
-def solver(puzzle):
-    for i in range(3):
-        displayPuzzle(puzzle)
-        print()
-    return 0
+def moveBlank(puzzle, move):
+    newPuzzle = []
+    for i in range(DIM):
+        row = []
+        for j in range(DIM):
+            row.append(puzzle[i][j])
+        newPuzzle.append(row)
+    if move == 'up':
+        up(newPuzzle)
+    elif move == 'down':
+        down(newPuzzle)
+    elif move == 'left':
+        left(newPuzzle)
+    elif move == 'right':
+        right(newPuzzle)
+
+    return newPuzzle
+
+def availableMove(puzzle):
+    availableMoves = []
+    row, col = findBlank(puzzle)
+    if row > 0:
+        availableMoves.append('up')
+    if row < DIM - 1:
+        availableMoves.append('down')
+    if col > 0:
+        availableMoves.append('left')
+    if col < DIM - 1:
+        availableMoves.append('right')
+    return availableMoves
+
+def getCost(puzzle):
+    cost = 0
+    for i in range(DIM):
+        for j in range(DIM):
+            if puzzle[i][j] != GOAL[i][j] and puzzle[i][j] != BLANK:
+                cost += 1
+    return cost
+
+def solver(puzzle, totalNode):
+    puzzleQueue = list(zip([0], [0], [puzzle], [""])) # cost, depth, puzzle, move
+
+    while puzzleQueue != []:
+        lowestCostIndex = min(range(len(puzzleQueue)), key=puzzleQueue.__getitem__)
+        lowestZip = puzzleQueue.pop(lowestCostIndex)
+        lowestDepth = lowestZip[1]
+        currentNode = lowestZip[2]
+        lastMove = lowestZip[3]
+        
+        # displayPuzzle(currentNode)
+        # print()
+
+        # check if puzzle is solved
+        if isSolved(currentNode):
+            return totalNode
+
+        availableMoves = availableMove(currentNode)
+
+        # delete opposite last move
+        if(lastMove == "up"):
+            availableMoves.remove("down")
+        elif(lastMove == "down"):
+            availableMoves.remove("up")
+        elif(lastMove == "left"):
+            availableMoves.remove("right")
+        elif(lastMove == "right"):
+            availableMoves.remove("left")
+
+        lowestDepth += 1
+        for move in availableMoves:
+            totalNode += 1
+
+            newNode = moveBlank(currentNode, move)
+            newCost = getCost(newNode) + lowestDepth
+            
+            puzzleQueue.append((newCost,lowestDepth, newNode, move))
 
 if __name__ == "__main__":
-    print("Solver for 15-puzzle")
-    print("====================")
-    print()
-    print("1. Random Puzzle")
-    print("2. Test Puzzle")
-    print("3. Exit")
-    print()
-    choice = 0
-    while(choice != 1 and choice != 2 and choice != 3):
-        choice = int(input("Enter your choice: "))
-        if choice == 1:
-            puzzle = createShuffledPuzzle()
-        elif choice == 2:
-            filename = input("Enter filename: ")
-            puzzle = readPuzzle(PATH + filename)
-        elif choice == 3:
-            exit()
-        else:
-            print("Invalid choice")
-
-    os.system("cls")
-    print("Puzzle:")
-    displayPuzzle(puzzle)
-    print()
-    row, col = findBlank(puzzle)
-    if (row + col) % 2 == 0:
-        X = 0
-    else:
-        X = 1
-    totalKURANG = 0
-    print("Nilai KURANG(i):")
-    for i in range(1, SIZE + 1):
-        if KURANG(i, puzzle) != 0:
-            print(i,":", KURANG(i, puzzle))
-            totalKURANG += KURANG(i, puzzle)
-    print()
-    print("\sum_{n=1}^{16}KURANG(i) + X:", totalKURANG + X)
-    print()
-    print("Solvable?", isSolvable(puzzle))
-    print()
-    
-    if(isSolvable(puzzle)):
-        input("Press Enter to solve...")
-        os.system("cls")
-        print("Solving...")
-        print()
-        timerStart = time.perf_counter()
-        solver(puzzle)
-        timerEnd = time.perf_counter()
-        print("Solved!")
-        print(f"Elapsed Time: {timerEnd - timerStart:0.4f} seconds")
-        print("Created Node :", "??")
-        print()
-        input("Press Enter to exit...")
-    else:
-        input("Press Enter to exit...")
+    puzzle = readPuzzle("./test/test.txt")
+    solver(puzzle, totalNode=0)
