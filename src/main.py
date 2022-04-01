@@ -34,8 +34,8 @@ else:
 totalKURANG = 0
 print("Nilai KURANG(i):")
 for i in range(1, SIZE + 1):
-    if KURANG(i, puzzle) != 0:
-        print(i,":", KURANG(i, puzzle))
+    # if KURANG(i, puzzle) != 0:
+        print(i, ":", KURANG(i, puzzle))
         totalKURANG += KURANG(i, puzzle)
 print()
 print("\sum_{n=1}^{16}KURANG(i) + X:", totalKURANG + X)
@@ -49,11 +49,10 @@ if(isSolvable(puzzle)):
     print("Solving...")
     print()
     timerStart = time.perf_counter()
-    totalNode = 0
-    totalNode = solver(puzzle, totalNode)
+    totalNode = solver(puzzle, totalNode = 0)
     timerEnd = time.perf_counter()
     print("Solved!")
-    print(f"Elapsed Time: {timerEnd - timerStart:0.4f} seconds")
+    print(f"Elapsed Time: {timerEnd - timerStart:0.10f} seconds")
     print("Created Node:", totalNode)
     print()
     input("Press Enter to exit...")
