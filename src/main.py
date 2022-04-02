@@ -26,35 +26,32 @@ os.system("cls")
 print("Puzzle:")
 displayPuzzle(puzzle)
 print()
-row, col = findBlank(puzzle)
-if (row + col) % 2 == 0:
-    X = 0
-else:
-    X = 1
-totalKURANG = 0
 print("Nilai KURANG(i):")
 for i in range(1, SIZE + 1):
     # if KURANG(i, puzzle) != 0:
         print(i, ":", KURANG(i, puzzle))
-        totalKURANG += KURANG(i, puzzle)
+isSolve, totalKURANG = isSolvable(puzzle)
 print()
-print("\sum_{n=1}^{16}KURANG(i) + X:", totalKURANG + X)
+print("Sigma KURANG(i) + X:", totalKURANG)
 print()
-print("Solvable?", isSolvable(puzzle))
+print("Solvable?", isSolve)
 print()
 
-if(isSolvable(puzzle)):
+if(isSolve):
     input("Press Enter to solve...")
     os.system("cls")
     print("Solving...")
     print()
     timerStart = time.perf_counter()
-    totalNode = solver(puzzle, totalNode = 0)
+    pathNode, totalNode = solver(puzzle, totalNode = 0)
     timerEnd = time.perf_counter()
+    displayPuzzle(puzzle)
+    displayPath(pathNode)
     print("Solved!")
-    print(f"Elapsed Time: {timerEnd - timerStart:0.10f} seconds")
+    print(f"Elapsed Time: {timerEnd - timerStart:0.7f} s")
     print("Created Node:", totalNode)
     print()
     input("Press Enter to exit...")
 else:
     input("Press Enter to exit...")
+    

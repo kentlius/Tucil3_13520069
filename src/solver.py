@@ -1,6 +1,6 @@
+from platform import node
 from puzzle import *
 import copy
-import time
 
 def POSISI(num, puzzle):
     if(num == 16):
@@ -31,17 +31,15 @@ def isSolvable(puzzle):
         totalKURANG += KURANG(i, puzzle)
 
     if (totalKURANG + X) % 2 == 0:
-        return True
+        return True, totalKURANG + X
     else:
-        return False
+        return False, totalKURANG + X
 
 def isSolved(puzzle):
     return puzzle == GOAL
 
 def swap(puzzle, row1, col1, row2, col2):
-    temp = puzzle[row1][col1]
-    puzzle[row1][col1] = puzzle[row2][col2]
-    puzzle[row2][col2] = temp
+    puzzle[row1][col1], puzzle[row2][col2] = puzzle[row2][col2], puzzle[row1][col1]
 
 def findBlank(puzzle):
     for i in range(DIM):
@@ -87,46 +85,77 @@ def delOppositeMove(moves, lastMove):
     elif(lastMove == "right"):
         moves.remove("left")
 
-def getCost(puzzle):
+def getCost(puzzle, depth):
     cost = 0
     for i in range(DIM):
         for j in range(DIM):
             if puzzle[i][j] != GOAL[i][j] and puzzle[i][j] != BLANK:
                 cost += 1
-    return cost
+    return cost + depth
+
+class Node:
+    def __init__(self, data=None):
+        self.puzzle = data
+        self.parent = None
+        self.depth = 0
+
+class PrioQueue(object):
+    def __init__(self):
+        self.queue = []
+        
+    def __str__(self):
+        return '\n'.join([str(i) for i in self.queue])
+
+    def enqueue(self, data):
+        self.queue.append(data)
+        
+    def dequeue(self):
+        temp = 0
+        for i in range(len(self.queue)):
+            if(self.queue[i][0] < self.queue[temp][0]):
+                temp = i
+        item = self.queue[temp]
+        del self.queue[temp]
+        return item
+
+def displayPath(node):
+    if(node.parent == None):
+        return
+    displayPath(node.parent)
+    print("Move ",node.depth,": ")
+    displayPuzzle(node.puzzle)
+    print()
 
 def solver(puzzle, totalNode):
-    aliveNode = list(zip([0], [0], [puzzle], [""])) # cost, depth, puzzle, move
-    # dict = {} # key: puzzle, value: [cost, depth, move]
+    node = Node(puzzle)
+    queue = PrioQueue()
+    # [cost, node, move]
+    queue.enqueue([getCost(node.puzzle, node.depth), node, ""])
+    currentNode = Node(puzzle)
+    while not isSolved(currentNode.puzzle):
+        minCostNode = queue.dequeue()
+        currentNode = minCostNode[1]
+        lastMove = minCostNode[2]
 
-    while aliveNode != []:
-        lowestCostIndex = min(range(len(aliveNode)), key=aliveNode.__getitem__)
-        lowestZip = aliveNode.pop(lowestCostIndex)
-        currentDepth = lowestZip[1]
-        currentNode = lowestZip[2]
-        lastMove = lowestZip[3]
+        if isSolved(currentNode.puzzle):
+            return currentNode, totalNode
 
-        # dict[aliveNode[lowestCostIndex][2]] = 1
-
-        if isSolved(currentNode):
-            return totalNode
-
-        availableMoves = availableMove(currentNode, lastMove)
+        availableMoves = availableMove(currentNode.puzzle, lastMove)
 
         # Generate new node
-        newDepth = currentDepth + 1
+        newDepth = currentNode.depth + 1
         for move in availableMoves:
             totalNode += 1
-
-            newNode = moveBlank(currentNode, move)
-            newCost = getCost(newNode) + newDepth
+            newNode = Node(moveBlank(currentNode.puzzle, move))
+            newNode.parent = currentNode
+            newNode.depth = newDepth
+            newCost = getCost(newNode.puzzle, newDepth)
             
-            aliveNode.append((newCost, newDepth, newNode, move))
+            queue.enqueue([newCost, newNode, move])
 
 if __name__ == "__main__":
     puzzle = readPuzzle("./test/solvable1.txt")
-    timerStart = time.perf_counter()
-    total = solver(puzzle, totalNode=0)
-    timerEnd = time.perf_counter()
-    print(f"Elapsed Time: {timerEnd - timerStart:0.10f} seconds")
+    currentNode, total = solver(puzzle, totalNode=0)
+    displayPuzzle(puzzle)
+    displayPath(currentNode)
     print(total)

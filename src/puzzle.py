@@ -5,14 +5,19 @@ SIZE = DIM * DIM # board size
 BLANK = "-" # blank tile
 
 # Goal Node
-GOAL = [["1", "2", "3", "4"], ["5", "6", "7", "8"], ["9", "10", "11", "12"], ["13", "14", "15", BLANK]]
+GOAL = [["1", "2", "3", "4"],
+        ["5", "6", "7", "8"],
+        ["9", "10", "11", "12"],
+        ["13", "14", "15", BLANK]]
 PATH = "./test/" # path to puzzle files
 
 # create shuffled 15 puzzle
 def createShuffledPuzzle():
-    value = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", BLANK]
+    value = ["1", "2", "3", "4",
+             "5", "6", "7", "8",
+             "9", "10", "11", "12",
+             "13", "14", "15", BLANK]
     random.shuffle(value)
-
     puzzle = []
     it = 0
     for i in range(DIM):
@@ -21,7 +26,6 @@ def createShuffledPuzzle():
             row.append(value[it])
             it += 1
         puzzle.append(row)
-
     return puzzle
 
 # read puzzle from file
@@ -33,7 +37,6 @@ def readPuzzle(filename):
             for i in line.split():
                 row.append(i)
             puzzle.append(row)
-
     return puzzle
 
 # print puzzle
@@ -56,4 +59,3 @@ if __name__ == "__main__":
     filePuzzle = readPuzzle(PATH + "solvable1.txt")
     print("File puzzle:")
     displayPuzzle(filePuzzle)
-
