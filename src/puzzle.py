@@ -19,12 +19,10 @@ def createShuffledPuzzle():
              "13", "14", "15", BLANK]
     random.shuffle(value)
     puzzle = []
-    it = 0
     for i in range(DIM):
         row = []
         for j in range(DIM):
-            row.append(value[it])
-            it += 1
+            row.append(value[i * DIM + j])
         puzzle.append(row)
     return puzzle
 

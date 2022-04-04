@@ -1,4 +1,3 @@
-from platform import node
 from puzzle import *
 import copy
 
@@ -132,10 +131,12 @@ def solver(puzzle, totalNode):
     # [cost, node, move]
     queue.enqueue([getCost(node.puzzle, node.depth), node, ""])
     currentNode = Node(puzzle)
+    visited = {}
     while not isSolved(currentNode.puzzle):
         minCostNode = queue.dequeue()
         currentNode = minCostNode[1]
         lastMove = minCostNode[2]
+        visited[str(currentNode.puzzle)] = "visited"
 
         if isSolved(currentNode.puzzle):
             return currentNode, totalNode
@@ -145,16 +146,18 @@ def solver(puzzle, totalNode):
         # Generate new node
         newDepth = currentNode.depth + 1
         for move in availableMoves:
-            totalNode += 1
             newNode = Node(moveBlank(currentNode.puzzle, move))
-            newNode.parent = currentNode
-            newNode.depth = newDepth
-            newCost = getCost(newNode.puzzle, newDepth)
-            
-            queue.enqueue([newCost, newNode, move])
+            if(str(newNode.puzzle) not in visited):
+                newNode.parent = currentNode
+                newNode.depth = newDepth
+                newCost = getCost(newNode.puzzle, newDepth)
+
+                totalNode += 1
+                queue.enqueue([newCost, newNode, move])
+    return node.puzzle, totalNode
 
 if __name__ == "__main__":
-    puzzle = readPuzzle("./test/solvable1.txt")
+    puzzle = readPuzzle("./test/solvable2.txt")
     currentNode, total = solver(puzzle, totalNode=0)
     displayPuzzle(puzzle)
     displayPath(currentNode)
