@@ -40,13 +40,16 @@ def readPuzzle(filename):
 # print puzzle
 def displayPuzzle(puzzle):
     for i in range(DIM):
-        print("-------------------")
+        print("---------------------")
         for j in range(DIM):
+            print("|", end=" ")
             if(puzzle[i][j] == BLANK or int(puzzle[i][j]) < 10):
-                print(puzzle[i][j], end="  | ")
+                print(puzzle[i][j], end="  ")
             else:
-                print(puzzle[i][j], end=" | ")
+                print(puzzle[i][j], end=" ")
+        print("|", end="")
         print()
+    print("---------------------")
     print()
 
 if __name__ == "__main__":
