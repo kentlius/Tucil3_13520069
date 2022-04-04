@@ -11,6 +11,7 @@ Using **branch and bound** algorithm to solve 15 puzzle.
 ### Prerequisite
 
 - Python 3
+- Tkinter (GUI)
 
 ### Installation
 
@@ -20,18 +21,23 @@ Using **branch and bound** algorithm to solve 15 puzzle.
    git clone https://github.com/kentlius/Tucil3_13520069.git
    ```
 
-2. Changedir to repo
+2. Changedir to repo source
    ```sh
-   cd Tucil3_13520069
+   cd Tucil3_13520069/src
    ```
 
 ## Usage
 
-1. Run main.py
+- For CLI
 
-   ```sh
-   python src/main.py
-   ```
+  ```sh
+  python main.py
+  ```
+
+- For GUI
+  ```sh
+  python gui.py
+  ```
 
 ## Author
 
