@@ -40,19 +40,22 @@ def readPuzzle(filename):
 # print puzzle
 def displayPuzzle(puzzle):
     for i in range(DIM):
+        print("-------------------")
         for j in range(DIM):
-            print(puzzle[i][j], end=" ")
+            if(puzzle[i][j] == BLANK or int(puzzle[i][j]) < 10):
+                print(puzzle[i][j], end="  | ")
+            else:
+                print(puzzle[i][j], end=" | ")
         print()
+    print()
 
 if __name__ == "__main__":
     print("Goal Puzzle:")
     displayPuzzle(GOAL)
-    print()
 
     shuffledPuzzle = createShuffledPuzzle()
     print("Shuffled puzzle:")
     displayPuzzle(shuffledPuzzle)
-    print()
 
     filePuzzle = readPuzzle(PATH + "solvable1.txt")
     print("File puzzle:")

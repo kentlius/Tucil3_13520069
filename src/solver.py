@@ -121,43 +121,39 @@ def displayPath(node):
     if(node.parent == None):
         return
     displayPath(node.parent)
-    print("Move ",node.depth,": ")
+    print(f"Move {node.depth}: ")
     displayPuzzle(node.puzzle)
-    print()
 
 def solver(puzzle, totalNode):
-    node = Node(puzzle)
     queue = PrioQueue()
-    # [cost, node, move]
-    queue.enqueue([getCost(node.puzzle, node.depth), node, ""])
     currentNode = Node(puzzle)
+    # [cost, node, move]
+    queue.enqueue([getCost(currentNode.puzzle, currentNode.depth), currentNode, ""])
     visited = {}
-    while not isSolved(currentNode.puzzle):
+    while(True):
         minCostNode = queue.dequeue()
         currentNode = minCostNode[1]
-        lastMove = minCostNode[2]
         visited[str(currentNode.puzzle)] = "visited"
-
-        if isSolved(currentNode.puzzle):
-            return currentNode, totalNode
-
+        
+        lastMove = minCostNode[2]
         availableMoves = availableMove(currentNode.puzzle, lastMove)
 
         # Generate new node
         newDepth = currentNode.depth + 1
         for move in availableMoves:
             newNode = Node(moveBlank(currentNode.puzzle, move))
+            
             if(str(newNode.puzzle) not in visited):
                 newNode.parent = currentNode
                 newNode.depth = newDepth
                 newCost = getCost(newNode.puzzle, newDepth)
-
                 totalNode += 1
+                if isSolved(newNode.puzzle):
+                    return newNode, totalNode
                 queue.enqueue([newCost, newNode, move])
-    return node.puzzle, totalNode
 
 if __name__ == "__main__":
-    puzzle = readPuzzle("./test/solvable2.txt")
+    puzzle = readPuzzle("./test/solvable1.txt")
     currentNode, total = solver(puzzle, totalNode=0)
     displayPuzzle(puzzle)
     displayPath(currentNode)

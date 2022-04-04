@@ -25,7 +25,6 @@ while(choice != 1 and choice != 2 and choice != 3):
 os.system("cls")
 print("Puzzle:")
 displayPuzzle(puzzle)
-print()
 print("Nilai KURANG(i):")
 for i in range(1, SIZE + 1):
     # if KURANG(i, puzzle) != 0:
@@ -45,6 +44,7 @@ if(isSolve):
     timerStart = time.perf_counter()
     pathNode, totalNode = solver(puzzle, totalNode = 0)
     timerEnd = time.perf_counter()
+    print("Initial Node:")
     displayPuzzle(puzzle)
     displayPath(pathNode)
     print("Solved!")
